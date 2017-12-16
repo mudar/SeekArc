@@ -292,31 +292,35 @@ public class SeekArc extends View {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		final int width = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
+		final int height = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
+		final int size = Math.min(width, height);
+		final int squareMeasureSpec = MeasureSpec.makeMeasureSpec(size, MeasureSpec.EXACTLY);
 
-		final int height = getDefaultSize(getSuggestedMinimumHeight(),
-				heightMeasureSpec);
-		final int width = getDefaultSize(getSuggestedMinimumWidth(),
-				widthMeasureSpec);
-		final int min = Math.min(width, height);
-		float top = 0;
-		float left = 0;
-		int arcDiameter = 0;
+		super.onMeasure(squareMeasureSpec, squareMeasureSpec);
 
-		mTranslateX = (int) (width * 0.5f);
-		mTranslateY = (int) (height * 0.5f);
-		
-		arcDiameter = min - getPaddingLeft();
+		final int horizontalPadding = getPaddingLeft() + getPaddingRight();
+		final int verticalPadding = getPaddingTop() + getPaddingBottom();
+		final int maxPadding = Math.max(horizontalPadding, verticalPadding);
+
+		final int arcDiameter = size - maxPadding;
 		mArcRadius = arcDiameter / 2;
-		top = height / 2 - (arcDiameter / 2);
-		left = width / 2 - (arcDiameter / 2);
+
+		float left = Math.max(getPaddingLeft(),
+				Math.min(verticalPadding / 2, (maxPadding - getPaddingRight())));
+		float top = Math.max(getPaddingTop(),
+				Math.min(horizontalPadding / 2, (maxPadding - getPaddingBottom())));
+
+		mTranslateX = (int) left + mArcRadius;
+		mTranslateY = (int) top + mArcRadius;
+
 		mArcRect.set(left, top, left + arcDiameter, top + arcDiameter);
-	
-		int arcStart = (int)mProgressSweep + mStartAngle  + mRotation + 90;
+
+		int arcStart = (int) mProgressSweep + mStartAngle + mRotation + 90;
 		mThumbXPos = (int) (mArcRadius * Math.cos(Math.toRadians(arcStart)));
 		mThumbYPos = (int) (mArcRadius * Math.sin(Math.toRadians(arcStart)));
 		
 		setTouchInSide(mTouchInside);
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
 	@Override
