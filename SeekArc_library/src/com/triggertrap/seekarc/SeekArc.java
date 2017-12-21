@@ -276,6 +276,9 @@ public class SeekArc extends View {
 		// Draw the arcs
 		final int arcStart = mStartAngle + mAngleOffset + mRotation;
 		final int arcSweep = mSweepAngle;
+		if (arcSweep == 0) {
+			return;
+		}
 		canvas.drawArc(mArcRect, arcStart, arcSweep, false, mArcPaint);
 		if (mProgress > 0) {
 			canvas.drawArc(mArcRect, arcStart, mProgressSweep, false,
