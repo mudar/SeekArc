@@ -37,6 +37,7 @@
         <attr name="seekArc_progressColor" format="color" />
         <attr name="seekArc_roundEdges" format="boolean" />
         <attr name="seekArc_touchInside" format="boolean" />
+        <attr name="seekArc_toleranceDegrees" format="integer" />
         <attr name="seekArc_clockwise" format="boolean" />
         <attr name="seekArc_enabled" format="boolean" />
     </declare-styleable>

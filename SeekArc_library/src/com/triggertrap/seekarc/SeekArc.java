@@ -103,6 +103,11 @@ public class SeekArc extends View {
 	private boolean mTouchInside = true;
 	
 	/**
+	 * Degrees where touch beyond edges is tolerated as start/sweep degree
+	 */
+	private int mToleranceDegrees = 0;
+	
+	/**
 	 * Will the progress increase clockwise or anti-clockwise
 	 */
 	private boolean mClockwise = true;
@@ -226,6 +231,8 @@ public class SeekArc extends View {
 					mRoundedEdges);
 			mTouchInside = a.getBoolean(R.styleable.SeekArc_seekArc_touchInside,
 					mTouchInside);
+			mToleranceDegrees = a.getInt(R.styleable.SeekArc_seekArc_toleranceDegrees,
+					mToleranceDegrees);
 			mClockwise = a.getBoolean(R.styleable.SeekArc_seekArc_clockwise,
 					mClockwise);
 			mEnabled = a.getBoolean(R.styleable.SeekArc_seekArc_enabled, mEnabled);
@@ -418,10 +425,13 @@ public class SeekArc extends View {
 	private int getProgressForAngle(double angle) {
 		int touchProgress = (int) Math.round(valuePerDegree() * angle);
 
-		touchProgress = (touchProgress < 0) ? 0
-				: touchProgress;
-		touchProgress = (touchProgress > mMax) ? mMax
-				: touchProgress;
+		if (touchProgress < 0) {
+			return (valuePerDegree() * (angle + mToleranceDegrees)) >= 0 ? 0
+					: INVALID_PROGRESS_VALUE;
+		} else if (touchProgress > mMax) {
+			return (valuePerDegree() * (angle - mToleranceDegrees)) <= mMax ? mMax
+					: INVALID_PROGRESS_VALUE;
+		}
 		return touchProgress;
 	}
 
